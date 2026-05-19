@@ -1,0 +1,16 @@
+{
+    "name": "commit-validator",
+    "version": "1.0.0",
+    "description": "Pre-commit hook that catches typos in git commit messages",
+    "main": "src/spellcheck.js",
+    "bin": {
+        "commit-validator": "./bin/cli.js"
+    },
+    "scripts": {
+        "test": "node test/test.js",
+        "install-hooks": "./scripts/install.sh",
+        "demo": "node demo/demo.js"
+    },
+    "keywords": ["git", "hook", "commit", "typo", "validator"],
+    "author": "Maja Swiderska"
+}
