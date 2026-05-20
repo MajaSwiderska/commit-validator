@@ -7,9 +7,12 @@
         "commit-validator": "./bin/cli.js"
     },
     "scripts": {
-        "test": "node test/test.js",
-        "install-hooks": "./scripts/install.sh",
-        "demo": "node demo/demo.js"
+    "test": "node test/test.js",
+    "demo": "node demo/demo.js",
+    "install-hook": "chmod +x scripts/install.sh && ./scripts/install.sh",
+    "uninstall": "chmod +x scripts/uninstall.sh && ./scripts/uninstall.sh",
+    "global-install": "npm link",
+    "dev": "node bin/cli.js"
     },
     "keywords": ["git", "hook", "commit", "typo", "validator"],
     "author": "Maja Swiderska"
