@@ -23,15 +23,15 @@ function levenshteinDistance(a, b) {
 
 function findSuggestions(word) {
     const cleanWord = word.toLowerCase().replace(/[^\w]/g, '');
-    if(cleanWord.length < 3) return [];
+    if (cleanWord.length < 3) return [];
 
-    if(typos[cleanWord]) {
+    if (typos[cleanWord]) {
         return [typos[cleanWord]];
     }
     const suggestions = [];
-    for(const [typo, correction] of Object.entries(typos)) {
+    for (const [typo, correction] of Object.entries(typos)) {
         const distance = levenshteinDistance(cleanWord, typo);
-        if(distance === 1 || (distance === 2 && cleanWord.length > 4)) {
+        if (distance === 1 || (distance === 2 && cleanWord.length > 4)) {
             suggestions.push(correction);
         }
     }
@@ -44,8 +44,8 @@ async function validateCommitMessage(commitMsg) {
 
     for (const word of words) {
         const suggestions = findSuggestions(word);
-        if(suggestions.length > 0) {
-            typosFound.push({ original: word, suggestions});
+        if (suggestions.length > 0) {
+            typosFound.push({ original: word, suggestions });
         }
     }
     return typosFound;
@@ -55,7 +55,7 @@ async function main() {
     const commitMsg = process.argv[2];
 
     if(!commitMsg) {
-        console.error('No commit message provided.');
+        console.error('[ERROR] No commit message provided.');
         console.error('Usage: commit validator "your commit message"');
         process.exit(1);
     }
@@ -66,13 +66,13 @@ async function main() {
     }
 
     const typosFound = await validateCommitMessage(commitMsg);
-    if(typosFound.length === 0) {
-        console.log('Commit message looks good!');
+    if (typosFound.length === 0) {
+        console.log('[OK]Commit message looks good!');
         process.exit(0);
     }
 
-    console.log('\n Potential typos found:\n');
-    for(const typo of typosFound) {
+    console.log('\n[WARNING] Potential typos found:\n');
+    for (const typo of typosFound) {
         console.log('  "${typo.original}" -> did you mean: ${typo.suggestions.join(', ')}?');
     }
 
@@ -87,14 +87,14 @@ async function main() {
 
     rl.close();
 
-    if(answer.toLowerCase() === 'y') {
-        console.log('Okay, commiting with typos...');
+    if (answer.toLowerCase() === 'y') {
+        console.log('[WARNING] Okay, commiting with typos...');
         process.exit(0);
     } else if (answer.toLowerCase() === 'edit') {
         console.log('\n Edit your message and run git commit again');
         process.exit(1);
-    }else{
-        console.log('\n Commit aborted. Fix typos and try again.');
+    } else {
+        console.log('\n[ERROR] Commit aborted. Fix typos and try again.');
         process.exit(1);
     }
 }

@@ -27,13 +27,13 @@ console.log('\n Testing typo commit:');
 try {
     execSync('git commit -m "fix teh button" --allow empty', {stdio: 'inherit' });
 } catch(e) {
-    console.log('\n (Blocked as expected)');
+    console.log('\n[OK] (Blocked as expected)');
 }
 
 console.log('\n Testing bypass mode:');
 try {
     execSync('SKIP_TYPO_CHECK=1 git commit -m "fix teh button" --allow-empty', { stdio: 'inherit' });
-    console.log('✅ Bypass worked');
+    console.log('[OK] Bypass worked');
 } catch(e) {}
 
 console.log('\n Testing emoji mode:');

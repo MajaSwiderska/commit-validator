@@ -19,19 +19,19 @@ async function runTests() {
         const passedTest = typos.length === test.expectedTypos;
 
         if (passedTest) {
-            console.log('${test.description}');
+            console.log('[PASS] ${test.description}');
             passed++;
         } else {
-            console.log(`${test.description} - Expected ${test.expectedTypos} typos, got ${typos.length}`);
+            console.log('[FAIL] ${test.description} - Expected ${test.expectedTypos} typos, got ${typos.length}');
         }    
     }
 
     const suggestion = generateSuggestion("fix the bug");
     if (suggestion.includes("fix") && (suggestion.includes("🐛") || suggestion.includes("🔧"))) {
-        console.log("Suggestion generator works");
+        console.log("[PASS] Suggestion generator works");
         passed++;
     } else {
-        console.log("Suggestion generator failed");
+        console.log("[FAIL] Suggestion generator failed");
     }
     
     console.log(`\n Results: ${passed}/${tests.length + 1} tests passed`);
