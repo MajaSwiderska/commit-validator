@@ -6,7 +6,7 @@ if [ "$SKIP_TYPO_CHECK" = "1" ]; then
     exit 0
 fi
 
-node "{{PWD}}/src/spellcheck.js" "COMMIT_MSG"
+node "C:/Users/default.LAPTOP-1G3DFLFM/commit-validator/src/spellcheck.js" "$COMMIT_MSG"
 if [ $? -ne 0 ]; then
     echo ""
     echo "Tip: Run with SKIP_TYPO_CHECK=1 git commit ... to bypass"
