@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const { validateCommitMessage } = require('../src/spellcheck');
 const { generateSuggestion } = require('../src/suggestions');
 const fs = require('fs');
@@ -9,42 +7,39 @@ const command = process.argv[2];
 
 async function installHook() {
     const hookPath = path.join(process.cwd(), '.git/hooks/commit-msg');
-    const hookContent = '#!/bin/sh\n' +
-    'COMMIT_MSG_FILE=$1\n' +
-    'COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")\n' +
-    '\n' +
-    'if [ "$SKIP_TYPO_CHECK" = "1" ]; then \n' +
-    '    exit 0\n' +
-    'fi\n' +
-    '\n' +
-    'node "$(pwd)/src/spellcheck.js" "$COMMIT_MSG"\n' +
-    'if [ $? -ne 0 ]; then\n' +
-    '    echo ""\n' +
-    '    echo " Tip: Run with SKIP_TYPO_CHECK=1 git commit ... to bypass"\n' +
-    '    exit 1\n' +
-    'fi\n' +
-    'exit 0\n' ;
+    const templatePath = path.join(__dirname, '../templates/hook-template.sh');
 
     if (!fs.existsSync('.git')) {
-        console.error('[ERROR] Not a git repository. Run 'git init' first.');
+        console.error('[ERROR] Not a git repository. Run `git init` first.');
         process.exit(1);
     }
+
+    if (!fs.existsSync(templatePath)) {
+    console.error('[ERROR] Template file not found: ' + templatePath);
+    process.exit(1);
+    }
+    
+    let hookContent = fs.readFileSync(templatePath, 'utf8');
+
+    hookContent = hookContent.replace(/{{PWD}}/g, process.cwd());
 
     fs.mkdirSync(path.dirname(hookPath), { recursive: true });
     fs.writeFileSync(hookPath, hookContent);
 
     try {
-    fs.chmod(hookPath, '755');
+    fs.chmodSync(hookPath, '755');
     } catch(e) {
+        // Ignore chmod errors on Windows
     }
-    console.log('[OK] commit validator hook installed successfully!');
+
+    console.log('[OK] commit-validator hook installed successfully!');
 }
 
 async function checkMessage() {
     const message = process.argv[3];
     if(!message) {
         console.error('[ERROR] Please provide a commit message to check');
-        console.error('Usage: commit validator check "your message"');
+        console.error('Usage: commit-validator check "your message"');
         process.exit(1);
     }
     
@@ -59,7 +54,7 @@ async function checkMessage() {
         }
         process.exit(0);
     } else {
-        console.log('\n Found ' + typos.length + ' potential typo(s):');
+        console.log('\n[WARNING] Found ' + typos.length + ' potential typo(s):');
         typos.forEach((typo) => {
             console.log('  "' + typo.original + '" -> ' + typo.suggestions.join(', '));
         });
