@@ -73,7 +73,7 @@ async function main() {
 
     console.log('\n[WARNING] Potential typos found:\n');
     for (const typo of typosFound) {
-        console.log('  "${typo.original}" -> did you mean: ${typo.suggestions.join(', ')}?');
+        console.log('  "' + typo.original + '" -> did you mean: ' + typo.suggestions.join(', ') + '?');
     }
 
     const rl = readline.createInterface({
